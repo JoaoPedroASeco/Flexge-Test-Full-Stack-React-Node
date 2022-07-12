@@ -2,7 +2,7 @@
 import mongoose from 'mongoose'
 
 // Database Config
-mongoose.connect('mongodb://localhost/flexge')
+mongoose.connect('mongodb://127.0.0.1:27017/flexge')
 mongoose.Promise = global.Promise
 
-module.exports = mongoose 
+export default mongoose
