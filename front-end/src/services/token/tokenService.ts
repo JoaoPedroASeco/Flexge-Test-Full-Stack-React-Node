@@ -8,7 +8,7 @@ export const tokenService = {
       path: '/',
     });
   },
-  get(ctx = null) {
+  async get(ctx = null) {
     const cookies = nookies.get(ctx);
     return cookies[ACCESS_TOKEN_KEY] || '';
   },

@@ -25,10 +25,11 @@ class StudentController {
 
   // Edit students
   async edit(request: Request, response: Response) {
-    const { name, age, course, school } = request.body
+    const { _id, name, age, course, school } = request.body
 
     try {
       const student = await createStudentUseCase.editStudentMiddleware({
+        _id,
         name,
         age,
         course,
@@ -43,10 +44,10 @@ class StudentController {
 
   // Delete students
   async delete(request: Request, response: Response) {
-    const { id } = request.body
+    const { _id } = request.body
     
     try {
-      const student = await createStudentUseCase.deleteStudentMiddleware({ id })
+      const student = await createStudentUseCase.deleteStudentMiddleware({ _id })
 
       return response.status(200).send(student)
     } catch (error) {
@@ -56,12 +57,30 @@ class StudentController {
 
   // List students
   async list(request: Request, response: Response) {
-    // const { } = request.body
+    const { limit = 12, page = 1, sort = 1 } = request.body
 
     try {
-      const student = await Student.find()
+      const allStudents = await Student.find()
+      
+      const student = await Student.aggregate([
+        {
+          $sort: { _id: sort }
+        },
+        {
+          $skip: page <= 1 ? 0 : limit * ( page - 1 ) 
+        },
+        {
+          $limit: limit
+        }
+      ])
 
-      return response.status(200).send(student)
+      return response.status(200).send({ 
+        total: student.length,
+        page: page,
+        totalPages: Math.ceil(allStudents.length/limit) || 1,
+        students: student,
+        order: sort
+      })
     } catch (error) {
       return error
     }

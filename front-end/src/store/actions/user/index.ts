@@ -1,37 +1,42 @@
-import * as types from '../../../types'
+import * as types from '../../types/user'
 
-export type UserType = {
-  name?: string
-  avatar_url?: string
-  message?: string
+export type UserRequestType = {
+  password: string
+  email: string
 }
 
-export function getUserRequest(name: string):{
-  type: string
-  payload: string
-}  {
+export type UserFailureType = {
+  message: string
+  status: string
+}
+
+export function getUserRequest({ email, password }: UserRequestType): { type: string, payload: UserRequestType } {
   return {
     type: types.GET_USER_REQUEST,
-    payload: name
+    payload: {
+      password,
+      email
+    }
   }
 }
 
-export function getUserSuccess(user: UserType):{
+export function getUserSuccess(): {
   type: string
-  payload: UserType
-}  {
+} {
   return {
     type: types.GET_USER_SUCCESS,
-    payload: user
   }
 }
 
-export function getUserFailure(user: UserType):{
+export function getUserFailure({ message, status }: UserFailureType): {
   type: string
-  payload: UserType
-}  {
+  payload: UserFailureType
+} {
   return {
     type: types.GET_USER_FAILURE,
-    payload: user
+    payload: {
+      status,
+      message
+    }
   }
 }

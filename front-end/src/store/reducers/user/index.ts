@@ -1,45 +1,46 @@
-import { UserType } from "../../actions";
-import * as types from '../../../types'
+import { UserFailureType } from "../../actions";
+import * as types from '../../types/user'
 
 export interface UserState {
-  user?: UserType
   loading?: boolean
-  error?: string
+  error?: UserFailureType
+  success: boolean
 }
 
 const initialState: UserState = {
-  user: {
-    avatar_url: '',
-    name: ''
-  },
   loading: false,
-  error: ''
+  success: false,
+  error: {
+    status: '',
+    message: ''
+  }
 }
 
 export const userReducer = (state = initialState, action: {
   type: string,
-  payload: UserType
+  payload: UserFailureType
 }) => {
   switch(action.type) {
     case types.GET_USER_REQUEST: 
       return {
         ...state,
         loading: true,
-        user: action.payload,
-        error: ''
+        error: '',
+        success: false
       }
     case types.GET_USER_SUCCESS: 
       return {
         ...state,
         loading: false,
-        user: action.payload,
-        error: ''
+        error: '',
+        success: true
       }
     case types.GET_USER_FAILURE: 
       return {
         ...state,
         loading: false,
-        error: action.payload
+        error: action.payload,
+        success: false
       }
     default: return state
   }
